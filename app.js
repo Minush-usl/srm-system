@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const passport = require('passport')
 const authRoutes = require('./routes/auth')
 const analiticsRoutes = require('./routes/analitics')
 const categoryRoutes = require('./routes/category')
@@ -13,6 +14,8 @@ mongoose.connect(keys.mondoURL)
     .then(() => console.log('MongoDb connected'))
     .catch(error => console.log(error))
 
+app.use(passport.initialize())
+require('./middleware/passport')(passport)
 // PARSING JSON
 app.use(require('morgan')('dev'))
 app.use(require('cors')())
