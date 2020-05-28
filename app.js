@@ -19,10 +19,11 @@ require('./middleware/passport')(passport)
 // PARSING JSON
 app.use(require('morgan')('dev'))
 app.use(require('cors')())
-// GIVES US TO GET ACCESS TO IMAGES VIA URL
-app.use('/uploads', express.static('uploads'))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
+// GIVES US TO GET ACCESS TO IMAGES VIA URL
+app.use('/uploads', express.static('uploads'))
+
 
 app.use('/api/auth', authRoutes)
 app.use('/api/analitics', analiticsRoutes)

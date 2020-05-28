@@ -37,7 +37,7 @@ module.exports.remove = async function(req, res) {
 module.exports.create = async function(req, res) {
     const category = new Category({
         name: req.body.name,
-        user: req.user.body,
+        user: req.user.id,
         imageSrc: req.file ? req.file.path : ''
     })
     try {
