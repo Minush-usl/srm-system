@@ -4,12 +4,14 @@ const handleError = require('../utils/errorHandler')
 
 module.exports.getAll = async function(req, res) {
     try {
-        const categories = await Category.find({_id: req.user.id})
+      const categories = await Category.find({user: req.user.id})
+      setTimeout(() => {
         res.status(200).json(categories)
-    } catch(e) {
-        handleError(res, e)
+      },3000)
+    } catch (e) {
+      errorHandler(res, e)
     }
-}
+  }
 
 module.exports.getById = async function(req, res) {
     try {
