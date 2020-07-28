@@ -10,7 +10,11 @@ const positionRoutes = require('./routes/position')
 const keys = require('./config/keys')
 const app = express()
 
-mongoose.connect(keys.mondoURL)
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+
+mongoose.connect(keys.mondoURL, { useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => console.log('MongoDb connected'))
     .catch(error => console.log(error))
 
