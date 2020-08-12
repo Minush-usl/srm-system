@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { switchMap, reduce } from 'rxjs/operators';
 import { CategoriesService } from 'src/app/shared/services/categories.service';
@@ -23,7 +23,8 @@ export class CategoriesFormComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -79,6 +80,18 @@ export class CategoriesFormComponent implements OnInit {
     reader.readAsDataURL(file)
   }
 
+  deleteCategory() {
+    const confirmation = window.confirm(`Are you sure to delete ${this.category.name} category?`)
+    if (confirmation) {
+    this.categoriesService.delete(this.category._id)
+      .subscribe(
+        response => MaterialService.toast(response.message),
+        error => MaterialService.toast(error.error.message),
+        () => this.router.navigate(['/categories'])
+      )
+    }
+  }
+
 
   onSubmit() {
     let obs$
@@ -93,8 +106,8 @@ export class CategoriesFormComponent implements OnInit {
     obs$.subscribe(
       category => {
         this.category = category
-        MaterialService.toast('Changes updated.')
-        this.form.enable()
+        MaterialService.toast(this.isNew ? 'Category is created.' : 'Category has been updated.')
+        this.isNew ? this.router.navigate(['/categories']) : this.form.enable()
       },
       error => {
         MaterialService.toast(error.error.message)
