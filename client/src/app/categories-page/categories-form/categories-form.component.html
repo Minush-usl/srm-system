@@ -14,7 +14,7 @@
 <div class="row">
     <form class="col s12 l6" [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="input-field">
-            <input id="name" type="text" formControlName="name" [ngClass]="{'invalid': form.get('name').invalid && form.get('name').touched}">
+            <input id="name" type="text" formControlName="name">
             <label for="name">Название</label>
             <span 
             class="helper-text red-text"
@@ -27,13 +27,13 @@
         </div>
 
         <div>
-            <input type="file" class="dn" #input>
+            
+            <input type="file" class="dn" #input  (change)="onFileUpload($event)">
             <button 
             (click)="triggerClick()"
-            (change)="onFileUpload($event)"
             class="waves-effect waves-light btn orange lighten-2 mb2"
             type="button"
-            [disabled]="form.disabled"
+           
             >
                 <i class="material-icons left">backup</i>
                 Download image
@@ -44,7 +44,7 @@
             <button 
             class="waves-effect waves-light btn" 
             type="submit"
-            [disabled] = "form.invalid || form.disabled"
+            [disabled] = "form.invalid || form.disabled" 
             >
                 Save changes
             </button>
@@ -54,8 +54,9 @@
     <div class="col s12 l4 center">
         <img 
         class="responsive-img h200" 
-        [src]="imagePreview"
-        *ngIf="imagePreview">
+        [src] = "imagePreview"
+        *ngIf="imagePreview"
+        >
     </div>
 </div>
 

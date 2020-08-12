@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, reduce } from 'rxjs/operators';
 import { CategoriesService } from 'src/app/shared/services/categories.service';
 import { of } from 'rxjs';
 import { MaterialService } from 'src/app/shared/classes/material.service';
+import { Category } from 'src/app/shared/interfaces/interfaces';
 
 @Component({
   selector: 'app-categories-form',
@@ -18,6 +19,7 @@ export class CategoriesFormComponent implements OnInit {
   isNew = true
   image: File
   imagePreview
+  category: Category
 
   constructor(
     private route: ActivatedRoute,
@@ -29,7 +31,7 @@ export class CategoriesFormComponent implements OnInit {
       name: new FormControl(null, Validators.required)
     })
 
-    this.form.disable()
+    // this.form.disable()
 
     this.route.params
       .pipe(
@@ -46,9 +48,11 @@ export class CategoriesFormComponent implements OnInit {
       ).subscribe(
         category => {
           if (category) {
+            this.category = category
             this.form.patchValue({
               name: category.name
             })
+            this.imagePreview = category.imageSrc
             MaterialService.updateTextInputs()
           }
 
@@ -67,6 +71,7 @@ export class CategoriesFormComponent implements OnInit {
     this.image = file
 
     const reader = new FileReader()
+
     reader.onload = () => {
       this.imagePreview = reader.result
     }
@@ -74,8 +79,28 @@ export class CategoriesFormComponent implements OnInit {
     reader.readAsDataURL(file)
   }
 
-  onSubmit() {
 
+  onSubmit() {
+    let obs$
+    this.form.disable()
+    
+    if (this.isNew) {
+      obs$ = this.categoriesService.create(this.form.value.name, this.image)
+    } else{
+      obs$ = this.categoriesService.update(this.category._id, this.form.value.name, this.image)
+    }
+
+    obs$.subscribe(
+      category => {
+        this.category = category
+        MaterialService.toast('Changes updated.')
+        this.form.enable()
+      },
+      error => {
+        MaterialService.toast(error.error.message)
+        this.form.enable()
+      }
+    )
   }
 
 }
