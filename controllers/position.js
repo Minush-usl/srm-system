@@ -1,19 +1,21 @@
 const Position = require('../models/Position')
 const errorHandler = require('../utils/errorHandler')
 
-module.exports.getByCategoryId = async function(req, res) {
+module.exports.getByCategoryId = async function(req,    res) {
     try {
         const position = await Position.find({
             category: req.params.categoryId,
             user: req.user.id
         })
-        res.status(200).json(position)
+        setTimeout(() => {
+            res.status(200).json(position)    
+        }, 3000);
     } catch(e) {
-        errorHandler(res, e)
+        errorHandler(   res, e)
     }
 }
 
-module.exports.create = async function(req, res) {
+module.exports.create = async function(req,     res) {
     try {
         const position = await new Position({
             name: req.body.name,
@@ -21,24 +23,24 @@ module.exports.create = async function(req, res) {
             category: req.body.category,
             user: req.user.id
         }).save()
-        res.status(201).json(position)
+            res.status(201).json(position)
     } catch(e) {
-        errorHandler(res, e)
+        errorHandler(   res, e)
     }
 }
 
-module.exports.remove = async function(req, res) {
+module.exports.remove = async function(req,     res) {
     try {
         await Position.remove({_id: req.params.id})
-        res.status(200).json({
+            res.status(200).json({
             message: 'Position has been deleted'
         })
     } catch(e) {
-        errorHandler(res, e)
+        errorHandler(   res, e)
     }
 }
 
-module.exports.update = async function(req, res) {
+module.exports.update = async function(req,     res) {
     try {
         const position = await Position.findOneAndUpdate(
             // FINDING A POSTION WE WANT TO UPDATE
@@ -49,6 +51,6 @@ module.exports.update = async function(req, res) {
             {new: true}
         )
     } catch(e) {
-        errorHandler(res, e)
+        errorHandler(   res, e)
     }
 }
