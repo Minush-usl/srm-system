@@ -3,6 +3,7 @@ import { PositionsService } from 'src/app/shared/services/positions.service';
 import { Position } from 'src/app/shared/interfaces/interfaces';
 import { MaterialService } from 'src/app/shared/classes/material.service';
 import { MaterialInstance } from '../../../shared/classes/material.service'
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-positions-form',
@@ -16,12 +17,18 @@ export class PositionsFormComponent implements OnInit, AfterViewInit, OnDestroy 
   positions: Position[] = []
   loading: boolean = false
   modal: MaterialInstance
+  form: FormGroup
 
   constructor(
     private positionsService: PositionsService
   ) { }
 
   ngOnInit(): void {
+
+    this.form = new FormGroup({
+      name: new FormControl(null, [Validators.required]),
+      cost: new FormControl(1, [Validators.required, Validators.min(1)])
+    })
     this.loading = true
     this.positionsService.fetch(this.categoryId).subscribe(positions => {
       this.positions = positions
@@ -47,5 +54,33 @@ export class PositionsFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   onCancel() {
     this.modal.close()
+  }
+
+  onDeletePosition(position: Position) {
+
+  }
+  
+  onSubmit() {
+    this.form.disable()
+    
+    const newPosition: Position = {
+      name: this.form.value.name,
+      cost: this.form.value.cost,
+      category: this.categoryId
+    }
+    this.positionsService.create(newPosition).subscribe(
+      position => {
+        MaterialService.toast(`${position.name} position is created.`)
+        this.positions.push(position)
+      },
+      error => {
+        MaterialService.toast(error.error.message)
+      },
+      () => {
+        this.modal.close()
+        this.form.reset({name: '', cost: 1})  
+        this.form.enable()      
+      }
+    )
   }
 }

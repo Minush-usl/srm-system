@@ -16,6 +16,12 @@ export class PositionsService {
   {
       return this.http.get<Position[]>(`/api/position/${categoriesId}`)
   }
+
+  create(position: Position): Observable<Position> 
+  {
+    return this.http.post<Position>('/api/position/', position)
+  }
 }
+
 
 
