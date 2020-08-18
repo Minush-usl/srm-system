@@ -21,6 +21,10 @@ export class PositionsService {
   {
     return this.http.post<Position>('/api/position/', position)
   }
+
+  update(position: Position): Observable<Position> {
+    return this.http.patch<Position>(`/api/position/${position._id}`, position)
+  }
 }
 
 

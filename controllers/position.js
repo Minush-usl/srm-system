@@ -50,6 +50,8 @@ module.exports.update = async function(req,     res) {
             // TO return an UPDATED POSITION
             {new: true}
         )
+
+        res.status(200).json(position)
     } catch(e) {
         errorHandler(   res, e)
     }

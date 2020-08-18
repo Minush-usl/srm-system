@@ -18,6 +18,7 @@ export class PositionsFormComponent implements OnInit, AfterViewInit, OnDestroy 
   loading: boolean = false
   modal: MaterialInstance
   form: FormGroup
+  positionId = null
 
   constructor(
     private positionsService: PositionsService
@@ -45,11 +46,23 @@ export class PositionsFormComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onSelectPosition(position: Position) {
+    this.positionId = position._id
     this.modal.open()
+    this.form.patchValue({
+      name: position.name,
+      cost: position.cost
+    })
+    MaterialService.updateTextInputs()
   }
 
   onAddPosition() {
+    this.positionId = null
     this.modal.open()
+    this.form.patchValue({
+      name: null,
+      cost: 1
+    })
+    MaterialService.updateTextInputs()
   }
 
   onCancel() {
@@ -59,6 +72,7 @@ export class PositionsFormComponent implements OnInit, AfterViewInit, OnDestroy 
   onDeletePosition(position: Position) {
 
   }
+
   
   onSubmit() {
     this.form.disable()
@@ -68,19 +82,35 @@ export class PositionsFormComponent implements OnInit, AfterViewInit, OnDestroy 
       cost: this.form.value.cost,
       category: this.categoryId
     }
-    this.positionsService.create(newPosition).subscribe(
-      position => {
-        MaterialService.toast(`${position.name} position is created.`)
-        this.positions.push(position)
-      },
-      error => {
-        MaterialService.toast(error.error.message)
-      },
-      () => {
-        this.modal.close()
-        this.form.reset({name: '', cost: 1})  
-        this.form.enable()      
-      }
-    )
+
+    const completed = () => {
+      this.modal.close()
+      this.form.reset({name: '', cost: 1})
+      this.form.enable()
+    }
+
+    if (this.positionId) {
+      newPosition._id = this.positionId
+      this.positionsService.update(newPosition).subscribe(
+        position => {
+          const posIdx = this.positions.findIndex(p => p._id === position._id)
+          this.positions[posIdx] = position
+          MaterialService.toast('Changes has been saved')
+        },
+        error => MaterialService.toast(error.error.message),
+        completed
+      )
+
+    } else {
+      this.positionsService.create(newPosition).subscribe(
+        position => {
+          MaterialService.toast(`${position.name} position is created.`)
+          this.positions.push(position)
+        },
+        error => MaterialService.toast(error.error.message),
+        completed
+      )
+    }
+
   }
 }
