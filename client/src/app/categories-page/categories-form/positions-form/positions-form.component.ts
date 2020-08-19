@@ -69,8 +69,22 @@ export class PositionsFormComponent implements OnInit, AfterViewInit, OnDestroy 
     this.modal.close()
   }
 
-  onDeletePosition(position: Position) {
+  onDeletePosition(event: Event, position: Position) {
+    event.stopPropagation()
+    const confirmation = window.confirm(`Are you sure to delete ${position.name} position?`)
 
+    if (confirmation) {
+      this.positionsService.delete(position._id).subscribe(
+        response => {
+          const indx = this.positions.findIndex(p => p._id === position._id)
+          this.positions.splice(indx, 1)
+          MaterialService.toast(response.message)
+        },
+        error => MaterialService.toast(error.error.message)
+      )
+    } else {
+
+    }
   }
 
   
