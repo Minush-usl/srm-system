@@ -39,7 +39,10 @@ export class OrderService {
     this.calculatePrice()
   }
 
-  clear() {}
+  clear() {
+    this.list = []
+    this.price = 0
+  }
 
   private calculatePrice() {
     this.price = this.list.reduce((total, item) => {
