@@ -33,7 +33,7 @@ export class OrderPositionsComponent implements OnInit {
     )
   }
 
-  addToOrder(position: Position) {
+  addToOrder(position){
     console.log(position)
     this.orderService.add(position)
   }
