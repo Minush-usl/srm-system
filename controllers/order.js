@@ -41,7 +41,10 @@ module.exports.getAll = async function(req, res) {
 
 module.exports.create = async function(req, res) {
     try {
-      const lastOrder = await Order.findOne({user: req.user.id})
+      const lastOrder = await Order
+        .findOne({user: req.user.id})
+        .sort({date: -1})
+      
       console.log('here', lastOrder)
       console.log(req.user.id)
       const maxOrder = lastOrder ? lastOrder.order : 0
