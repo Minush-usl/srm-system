@@ -10,6 +10,10 @@ const orderSchema = new Schema({
         type: Number,
         required: true
     },
+    user: {
+        ref: 'users',
+        type: Schema.Types.ObjectId
+    },
     list: [
         {
             name: {

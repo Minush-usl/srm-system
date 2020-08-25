@@ -66,13 +66,18 @@ export class OrderPageComponent implements OnInit, OnDestroy, AfterViewInit {
         return item
       })
     }
+    console.log(order)
 
     this.oSub = this.ordersService.create(order).subscribe(
       newOrder => {
         MaterialService.toast(`Order № ${newOrder.order} has been created`)
         this.orderService.clear()
+        console.log(newOrder)
       },
-      error => MaterialService.toast(error.error.message),
+      error => { 
+        MaterialService.toast(error.error.message),
+        console.log(error) 
+      },
       () => {
         this.modal.close()
         this.pending = false
