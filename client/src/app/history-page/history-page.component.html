@@ -18,7 +18,7 @@
 ></app-history-filter>
 
 <div *ngIf="!reloading; else reloadingBlock">
-  <div *ngIf="orders.length > 0; empty">
+  <div *ngIf="orders.length > 0; else empty">
     <app-history-list [orders]="orders"></app-history-list>
 
     <div class="center mb2" *ngIf="!noMoreOrders">
@@ -32,7 +32,7 @@
   </div>
   <ng-template #empty>
     <div class="center">
-      There are no orders yet... =(
+      There are no orders... =(
     </div>
   </ng-template>
 </div>

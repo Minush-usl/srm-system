@@ -22,6 +22,7 @@ export class HistoryPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   reloading: boolean = false
   noMoreOrders: boolean = false
+  filter: Filter = {}
 
   isFilterVisible = false
   constructor(
@@ -34,10 +35,10 @@ export class HistoryPageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private fetch() {
-    const params = {
+    const params = Object.assign({}, this.filter, {
       offset: this.offset,
       limit: this.limit
-    }
+    })
     this.oSub = this.ordersService.fetch(params).subscribe(orders => {
       this.orders = this.orders.concat(orders)
       this.noMoreOrders = orders.length < 2
@@ -52,7 +53,11 @@ export class HistoryPageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   applyFilter(filter: Filter) {
-
+    this.offset = 0
+    this.filter = filter
+    this.reloading = true
+    this.orders = []
+    this.fetch()
   }
 
   ngAfterViewInit() {
