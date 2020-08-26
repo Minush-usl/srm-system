@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { MaterialInstance, MaterialService } from '../shared/classes/material.service';
 import { OrdersService } from '../shared/services/orders.service';
-import { Order } from '../shared/interfaces/interfaces';
+import { Order, Filter } from '../shared/interfaces/interfaces';
 import { Subscription } from 'rxjs';
 
 const STEP = 2
@@ -49,6 +49,10 @@ export class HistoryPageComponent implements OnInit, OnDestroy, AfterViewInit {
   showMore() {
     this.offset += STEP
     this.fetch()
+  }
+
+  applyFilter(filter: Filter) {
+
   }
 
   ngAfterViewInit() {
