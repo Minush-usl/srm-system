@@ -1,20 +1,40 @@
 <div class="page-title">
-    <h4>Orders history</h4>
-    <button 
-        class="btn btn-small" 
-        data-tooltip="Open filter"
-        (click)="isFilterVisible = !isFilterVisible"
-        [ngClass]="{'active': isFilterVisible}"
-        data-position="left"
-        #tooltip>
-        <i class="material-icons">filter_list</i>
-    </button>
+  <h4>Orders history</h4>
+  <button
+    class="btn btn-small"
+    data-tooltip="Open filter"
+    (click)="isFilterVisible = !isFilterVisible"
+    [ngClass]="{ active: isFilterVisible }"
+    data-position="left"
+    #tooltip
+  >
+    <i class="material-icons">filter_list</i>
+  </button>
 </div>
 
-<app-history-filter *ngIf="isFilterVisible"></app-history-filter>
+<app-history-filter
+  *ngIf="isFilterVisible"
+  (onFilter)="applyFilter($event)"
+></app-history-filter>
 
-<app-history-list></app-history-list>
+<div *ngIf="!reloading; else reloadingBlock">
+  <div *ngIf="orders.length > 0; else empty">
+    <app-history-list [orders]="orders"></app-history-list>
 
-<div class="center mb2">
-    <button class="btn waves-effect grey darken-1 btn-small">Download more</button>
+    <div class="center mb2" *ngIf="!noMoreOrders">
+      <button
+        class="btn waves-effect grey darken-1 btn-small"
+        (click)="showMore()"
+      >
+        Download more
+      </button>
+    </div>
+  </div>
+  <ng-template #empty>
+    <div class="center">
+      There are no orders... =(
+    </div>
+  </ng-template>
 </div>
+
+<ng-template #reloadingBlock></ng-template>
