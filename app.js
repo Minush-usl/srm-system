@@ -30,7 +30,7 @@ app.use('/uploads', express.static('uploads'))
 
 
 app.use('/api/auth', authRoutes)
-app.use('/api/analitics', analiticsRoutes)
+app.use('/api/analytics', analiticsRoutes)
 app.use('/api/category', categoryRoutes)
 app.use('/api/order', orderRoutes)
 app.use('/api/position', positionRoutes)
