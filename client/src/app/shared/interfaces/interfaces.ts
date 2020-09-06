@@ -59,7 +59,7 @@ export interface OverviewPageItem {
 
 export interface AnalyticsPage {
     average: number,
-    chart: AnalyticsChartsItem
+    chart: [AnalyticsChartsItem]
 }
 
 export interface AnalyticsChartsItem {

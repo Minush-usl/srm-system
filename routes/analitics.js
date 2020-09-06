@@ -8,5 +8,4 @@ router.get('/overview', passport.authenticate('jwt', {session: false}), controll
 
 router.get('/analytics', passport.authenticate('jwt', {session: false}), controller.analytics)
 
-
 module.exports = router

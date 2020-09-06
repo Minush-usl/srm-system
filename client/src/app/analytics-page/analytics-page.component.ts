@@ -1,7 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { AnalyticsService } from '../shared/services/analytics.service';
-import { AnalyticsPage } from '../shared/interfaces/interfaces';
-import { Subscription } from 'rxjs';
+
+
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core'
+import {AnalyticsService} from '../shared/services/analytics.service'
+import {AnalyticsPage} from '../shared/interfaces/interfaces'
+import {Chart} from 'chart.js'
+import {Subscription} from 'rxjs'
 
 @Component({
   selector: 'app-analytics-page',
@@ -9,24 +12,72 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./analytics-page.component.scss']
 })
 export class AnalyticsPageComponent implements AfterViewInit, OnDestroy {
+
   @ViewChild('gain') gainRef: ElementRef
   @ViewChild('order') orderRef: ElementRef
 
-  average: number
-  pending: boolean = true
   aSub: Subscription
+  average: number
+  pending = true
 
-  constructor(
-    private service: AnalyticsService
-  ) { }
+  constructor(private service: AnalyticsService) {
+  }
 
   ngAfterViewInit() {
-    this.aSub = this.service.getAnalytics().subscribe(
-      (data: AnalyticsPage) => {
-        this.pending = false
-        this.average = data.average
-      }
-    )
+    const gainConfig: any = {
+      label: 'Gain',
+      color: 'rgb(255, 99, 132)'
+    }
+
+    const orderConfig: any = {
+      label: 'Orders',
+      color: 'rgb(54, 162, 235)'
+    }
+
+    this.aSub = this.service.getAnalytics().subscribe((data: AnalyticsPage) => {
+      this.average = data.average
+
+      gainConfig.labels = data.chart.map(item => item.label)
+      gainConfig.data = data.chart.map(item => item.gain)
+
+      orderConfig.labels = data.chart.map(item => item.label)
+      orderConfig.data = data.chart.map(item => item.order)
+
+      // **** Gain ****
+      // gainConfig.labels.push('02.09.2020')
+      // gainConfig.labels.push('03.09.2020')
+      // gainConfig.labels.push('04.09.2020')
+      // gainConfig.labels.push('05.09.2020')
+
+      // gainConfig.data.push(700)
+      // gainConfig.data.push(900)
+      // gainConfig.data.push(1200)
+      // gainConfig.data.push(600)
+
+      // **** /Gain ****
+
+      // **** Order ****
+      // orderConfig.labels.push('02.09.2020')
+      // orderConfig.labels.push('03.09.2020')
+      // orderConfig.labels.push('04.09.2020')
+      // orderConfig.labels.push('05.09.2020')
+
+      // orderConfig.data.push(4)
+      // orderConfig.data.push(6)
+      // orderConfig.data.push(8)
+      // orderConfig.data.push(2)
+      // **** /Order ****
+
+      const gainCtx = this.gainRef.nativeElement.getContext('2d')
+      const orderCtx = this.orderRef.nativeElement.getContext('2d')
+      gainCtx.canvas.height = '300px'
+      orderCtx.canvas.height = '300px'
+
+      new Chart(gainCtx, createChartConfig(gainConfig))
+      new Chart(orderCtx, createChartConfig(orderConfig))
+
+      this.pending = false
+    })
   }
 
   ngOnDestroy() {
@@ -36,3 +87,25 @@ export class AnalyticsPageComponent implements AfterViewInit, OnDestroy {
   }
 
 }
+
+
+function createChartConfig({labels, data, label, color}) {
+  return {
+    type: 'line',
+    options: {
+      responsive: true
+    },
+    data: {
+      labels,
+      datasets: [
+        {
+          label, data,
+          borderColor: color,
+          steppedLine: false,
+          fill: false
+        }
+      ]
+    }
+  }
+}
+

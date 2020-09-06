@@ -9,7 +9,7 @@ import { MaterialInstance, MaterialService } from '../shared/classes/material.se
   templateUrl: './overview-page.component.html',
   styleUrls: ['./overview-page.component.scss']
 })
-export class OverviewPageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class OverviewPageComponent implements OnInit {
   data$: Observable<OverviewPage>
   yesterday = new Date()
  
@@ -25,15 +25,5 @@ export class OverviewPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.yesterday.setDate(this.yesterday.getDate() - 1)
   }
 
-  ngOnDestroy() {
-    this.tapTarget.destroy()
-  }
-
-  ngAfterViewInit() {
-    this.tapTarget = MaterialService.initTapTarget(this.tapTargetRef)
-  }
-  openTap() {
-    this.tapTarget.open()
-  }
 
 }

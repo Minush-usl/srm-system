@@ -19,4 +19,8 @@ export class AnalyticsService {
   getAnalytics(): Observable<AnalyticsPage> {
     return this.http.get<AnalyticsPage>('api/analytics/analytics')
   }
+
+  getOrders() {
+    return this.http.get<AnalyticsPage>('api/analytics/order')
+  }
 }
