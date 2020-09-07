@@ -68,4 +68,5 @@ export class HistoryPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.tooltip.destroy()
     this.oSub.unsubscribe()
   }
+
 }

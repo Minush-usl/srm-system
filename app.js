@@ -9,6 +9,7 @@ const orderRoutes = require('./routes/order')
 const positionRoutes = require('./routes/position')
 const keys = require('./config/keys')
 const app = express()
+const path = require('path')
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -34,5 +35,17 @@ app.use('/api/analytics', analiticsRoutes)
 app.use('/api/category', categoryRoutes)
 app.use('/api/order', orderRoutes)
 app.use('/api/position', positionRoutes)
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/dist/client'))
+
+    app.get('*', (req, res) => {
+        res.sendFile(
+            path.resolve(
+                __dirname, 'client', 'dist', 'client', 'index.html'
+            )
+        )
+    })
+}
 
 module.exports = app
